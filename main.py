@@ -6,6 +6,8 @@ from copy import copy, deepcopy
 
 ACTION_COST = 1
 GAME_SIZE = 3
+STATES_PRODUCED = 0
+
 
 class State:
     def __init__(self, config=None, path_cost =0, parent_pointer=None, blank_coordinates=(0,0)):
@@ -44,6 +46,9 @@ class SearchSolution:
     goal_coordinates = {0:(0,0), 1:(0,0), 2:(0,0), 3:(0,0), 4:(0,0), 5:(0,0), 6:(0,0), 7:(0,0), 8:(0,0)}
     frontier = PriorityQueue()
     visited = []
+    states_produced = 0
+    states_visited = 0
+    states_put_in_frontier = 0
 
     def __init__(self, start_state=None, goal_state=None, solution_flag=False):
         self.start_state = SearchSolution.take_config_input("start")
@@ -55,13 +60,16 @@ class SearchSolution:
         SearchSolution.calculate_heuristic(self.start_state)
         # self.goal_state.heuristic = 0
         SearchSolution.frontier.put((self.start_state.eval_func, self.start_state))
+        SearchSolution.states_put_in_frontier += 1
         self.current_state = deepcopy(self.start_state)
         while not SearchSolution.frontier.empty():
             self.current_state = SearchSolution.frontier.get()[1]
             SearchSolution.visited.append(self.current_state)
+            SearchSolution.states_visited += 1
             if self.check_goal_state():
                 self.solution_flag = True
-                SearchSolution.print_solution(self.current_state)
+                solution_size = SearchSolution.print_solution(self.current_state, 0)
+                print(f"Solution steps are {solution_size}")
                 break
             self.produce_child()
 
@@ -102,6 +110,7 @@ class SearchSolution:
                     except ValueError:
                         print("Given input was not a valid one, try again")
                         continue
+        SearchSolution.states_produced += 1
         return state
 
     def produce_child(self):
@@ -122,6 +131,7 @@ class SearchSolution:
             SearchSolution.calculate_heuristic(child_state)
             if not SearchSolution.check_in_visited(child_state):
                 SearchSolution.frontier.put((child_state.eval_func, child_state))
+                SearchSolution.states_put_in_frontier += 1
 
 
     def produce_state(self, coordinates , state):
@@ -133,6 +143,7 @@ class SearchSolution:
         blank_coordinates = coordinates
         parent_pointer = state
         new_state = State(config, path_cost, parent_pointer, blank_coordinates)
+        SearchSolution.states_produced += 1
         return new_state
 
     @staticmethod
@@ -156,10 +167,12 @@ class SearchSolution:
         pass
 
     @staticmethod
-    def print_solution(state):
+    def print_solution(state, size):
         if state is not None:
-            SearchSolution.print_solution(state.parent_pointer)
+            size = SearchSolution.print_solution(state.parent_pointer, size)
             state.print_state()
+        return size+1
+
 
 
 def main():
@@ -179,9 +192,14 @@ def main():
     #     config = game.frontier.get()[1].print_state()
     if game.solution_flag:
         print("Solution Found")
+    else:
+        print("Solution not found")
     print("*" * 100)
     print("*" * 100)
     print("*" * 100)
+    print(f"States produced = {SearchSolution.states_produced}")
+    print(f"States visited = {SearchSolution.states_visited}")
+    print(f"States put in frontier = {SearchSolution.states_put_in_frontier}")
 main()
 
 
