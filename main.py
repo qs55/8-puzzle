@@ -34,6 +34,9 @@ class State:
                 if self.config[i][j] == 0:
                     return (i, j)
 
+    def __lt__(self, other):
+        return True
+
 
 
 class SearchSolution:
@@ -103,10 +106,10 @@ class SearchSolution:
 
 
         for child in children:
-            state = self.produce_state(child, deepcopy(self.current_state))
-            SearchSolution.calculate_heuristic(state)
-            fn = state.heuristic + state.path_cost
-            self.frontier.put((fn, state))    # If it does not exist in the frontier already other wise update cost
+            child_state = self.produce_state(child, deepcopy(self.current_state))
+            SearchSolution.calculate_heuristic(child_state)
+            fn = child_state.heuristic + child_state.path_cost
+            self.frontier.put((fn, child_state))    # If it does not exist in the frontier already other wise update cost
 
     def produce_state(self, coordinates , state):
         x1, y1 = state.blank_coordinates
@@ -119,6 +122,10 @@ class SearchSolution:
 
         new_state = State(config, path_cost, parent_pointer, blank_coordinates)
         return new_state
+
+    @staticmethod
+    def check_in_frontier(state):
+        pass
 
     def check_frontier(self):   # check if a node exists in frontier
         pass
@@ -138,6 +145,10 @@ def main():
     print(game.start_state.blank_coordinates)
     game.initialize_game()
     print(game.start_state.heuristic)
+
+    print("*" * 100)
+    while not game.frontier.empty():
+        config = game.frontier.get()[1].print_state()
 
 main()
 
