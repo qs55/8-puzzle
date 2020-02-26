@@ -12,6 +12,7 @@ class State:
         self.parent_pointer = parent_pointer
         self.config = config if config is not None else np.zeros((3,3),'int')
         self.heuristic = 0
+        self.eval_func = 0
         self.path_cost = path_cost
         self.blank_coordinates = blank_coordinates
 
@@ -41,18 +42,28 @@ class State:
 
 class SearchSolution:
     goal_coordinates = {0:(0,0), 1:(0,0), 2:(0,0), 3:(0,0), 4:(0,0), 5:(0,0), 6:(0,0), 7:(0,0), 8:(0,0)}
-    def __init__(self, start_state=None, goal_state=None, frontier=PriorityQueue(), visited=[], solution_flag=False):
+    frontier = PriorityQueue()
+    visited = []
+
+    def __init__(self, start_state=None, goal_state=None, solution_flag=False):
         self.start_state = SearchSolution.take_config_input("start")
-        self.current_state = deepcopy(self.start_state)
+        self.current_state = None
         self.goal_state = SearchSolution.take_config_input("end")
-        self.frontier = frontier
-        self.visited = visited
         self.solution_flag = solution_flag
 
     def initialize_game(self):
         SearchSolution.calculate_heuristic(self.start_state)
-        self.goal_state.heuristic = 0
-        self.produce_child()
+        # self.goal_state.heuristic = 0
+        SearchSolution.frontier.put((self.start_state.eval_func, self.start_state))
+        self.current_state = deepcopy(self.start_state)
+        while not SearchSolution.frontier.empty():
+            self.current_state = SearchSolution.frontier.get()[1]
+            SearchSolution.visited.append(self.current_state)
+            if self.check_goal_state():
+                self.solution_flag = True
+                SearchSolution.print_solution(self.current_state)
+                break
+            self.produce_child()
 
     @staticmethod
     def calculate_heuristic(state):
@@ -66,6 +77,7 @@ class SearchSolution:
                     distance += (x+y)
 
         state.heuristic = distance
+        state.eval_func = state.path_cost + state.heuristic
 
     @staticmethod
     def take_config_input(input_state):
@@ -108,8 +120,9 @@ class SearchSolution:
         for child in children:
             child_state = self.produce_state(child, deepcopy(self.current_state))
             SearchSolution.calculate_heuristic(child_state)
-            fn = child_state.heuristic + child_state.path_cost
-            self.frontier.put((fn, child_state))    # If it does not exist in the frontier already other wise update cost
+            if not SearchSolution.check_in_visited(child_state):
+                SearchSolution.frontier.put((child_state.eval_func, child_state))
+
 
     def produce_state(self, coordinates , state):
         x1, y1 = state.blank_coordinates
@@ -119,13 +132,22 @@ class SearchSolution:
         path_cost = state.path_cost + ACTION_COST
         blank_coordinates = coordinates
         parent_pointer = state
-
         new_state = State(config, path_cost, parent_pointer, blank_coordinates)
         return new_state
 
     @staticmethod
-    def check_in_frontier(state):
-        pass
+    def check_in_visited(state):
+        for item in SearchSolution.frontier.queue:
+            if (item[1].config == state.config).all():
+                return True
+        else:
+            return False
+
+    def check_goal_state(self):
+        if (self.current_state.config == self.goal_state.config).all():
+            return True
+        return False
+
 
     def check_frontier(self):   # check if a node exists in frontier
         pass
@@ -133,23 +155,33 @@ class SearchSolution:
     def start_search(self):
         pass
 
-    def print_solution(self):
-        pass
+    @staticmethod
+    def print_solution(state):
+        if state is not None:
+            SearchSolution.print_solution(state.parent_pointer)
+            state.print_state()
+
 
 def main():
     game = SearchSolution()
-    # game.current_state.config[0][0] = 9
-    game.start_state.print_state()
-    game.goal_state.print_state()
-    game.current_state.print_state()
-    print(game.start_state.blank_coordinates)
+    # # game.current_state.config[0][0] = 9
+    # game.start_state.print_state()
+    # game.goal_state.print_state()
+    # game.current_state.print_state()
+    # print(game.start_state.blank_coordinates)
     game.initialize_game()
-    print(game.start_state.heuristic)
+    # print(game.start_state.heuristic)
 
     print("*" * 100)
-    while not game.frontier.empty():
-        config = game.frontier.get()[1].print_state()
-
+    print("*" * 100)
+    print("*" * 100)
+    # while not game.frontier.empty():
+    #     config = game.frontier.get()[1].print_state()
+    if game.solution_flag:
+        print("Solution Found")
+    print("*" * 100)
+    print("*" * 100)
+    print("*" * 100)
 main()
 
 
