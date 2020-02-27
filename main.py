@@ -48,7 +48,7 @@ class SearchSolution:
         # self.goal_state.heuristic = 0
         SearchSolution.frontier.add(self.start_state, self.start_state.eval_func)
         SearchSolution.states_put_in_frontier += 1
-        self.current_state = deepcopy(self.start_state)
+        # self.current_state = deepcopy(self.start_state)
         while not SearchSolution.frontier.empty():
             self.current_state = SearchSolution.frontier.pop()
             SearchSolution.visited.append(self.current_state)
@@ -177,7 +177,8 @@ def main():
     print("*" * 100)
     print(f"States produced = {SearchSolution.states_produced}")
     print(f"States visited = {SearchSolution.states_visited}")
-    print(f"States put in frontier = {SearchSolution.states_put_in_frontier}")
-
+    print(f"States in frontier now = {SearchSolution.frontier.counter}")
+    print(f"Total states tried to put in frontier = {SearchSolution.states_put_in_frontier}")
+    print(f"Total states updated in frontier = {SearchSolution.frontier.removed}")
 
 main()

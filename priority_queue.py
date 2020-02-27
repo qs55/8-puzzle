@@ -10,6 +10,7 @@ class PriorityQueue(object):
         self.heap = []
         self.entries = {}
         self.counter = 0
+        self.removed = 0
 
     def add(self, task, priority=0):
         """Add a new task or update the priority of an existing task"""
@@ -17,6 +18,7 @@ class PriorityQueue(object):
             if not isinstance(entry[1][2], str):
                 if (task.config == entry[1][2].config).all():
                     self.remove(entry[0])
+                    self.removed += 1
 
         # weight = -priority since heap is a min-heap
         entry = [priority, PriorityQueue.COUNT, task]
