@@ -9,21 +9,21 @@ class PriorityQueue(object):
     def __init__(self):
         self.heap = []
         self.entries = {}
-        self.counter = itertools.count()
+        self.counter = 0
 
     def add(self, task, priority=0):
         """Add a new task or update the priority of an existing task"""
         for entry in self.entries.items():
-            if not isinstance(entry[1][3], str):
-                if (task == entry[1][3]).all():
+            if not isinstance(entry[1][2], str):
+                if (task.config == entry[1][2].config).all():
                     self.remove(entry[0])
 
-        count = next(self.counter)
         # weight = -priority since heap is a min-heap
-        entry = [priority, count, PriorityQueue.COUNT, task]
+        entry = [priority, PriorityQueue.COUNT, task]
         self.entries[PriorityQueue.COUNT] = entry
         PriorityQueue.COUNT += 1
         heapq.heappush(self.heap, entry)
+        self.counter += 1
         pass
 
     def remove(self, index):
@@ -33,6 +33,7 @@ class PriorityQueue(object):
         """
         entry = self.entries[index]
         entry[-1] = PriorityQueue._REMOVED
+        self.counter -= 1
         pass
 
     def pop(self):
@@ -41,14 +42,15 @@ class PriorityQueue(object):
         :return: Priority, Task with highest priority
         """
         while self.heap:
-            weight, count, index, task = heapq.heappop(self.heap)
+            weight, index, task = heapq.heappop(self.heap)
             # print(f"Priority: ----> {weight}")
             # print(f"Count: ----> {count}")
             # print(f"Index: ---> {index}")
             # print(f"Task: ----> {task}")
             if task is not PriorityQueue._REMOVED:
                 del self.entries[index]
-                return index, weight, task
+                self.counter -= 1
+                return task
         raise KeyError("The priority queue is empty")
 
     def peek(self):
@@ -57,7 +59,7 @@ class PriorityQueue(object):
         :return: Priority, Task with highest priority
         """
         while self.heap:
-            weight, count, index, task = self.heap[0]
+            weight, index, task = self.heap[0]
             if task is PriorityQueue._REMOVED:
                 heapq.heappop(self.heap)
             else:
@@ -70,28 +72,6 @@ class PriorityQueue(object):
         return "[%s]" % ", ".join(temp)
 
     def empty(self):
-        if len(self.entries):
+        if self.counter:
             return False
         return True
-
-
-
-def main():
-    pq = PriorityQueue()
-    arr1 = numpy.zeros((3,3), 'int')
-    arr2 = numpy.zeros((3,3), 'int')
-    arr3 = numpy.zeros((3,3), 'int')
-    pq.add(arr1, 1)
-    pq.add(arr2, 2)
-    pq.add(arr3, 3)
-
-
-    print(pq.empty())
-    print(pq.pop())
-    # print(pq.pop())
-    print(pq.entries)
-
-
-
-
-main()

@@ -1,6 +1,7 @@
 import numpy as np
-from queue import PriorityQueue
+# from queue import PriorityQueue
 from copy import deepcopy
+from priority_queue import PriorityQueue
 
 ACTION_COST = 1
 GAME_SIZE = 3
@@ -45,11 +46,11 @@ class SearchSolution:
     def initialize_game(self):
         SearchSolution.calculate_heuristic(self.start_state)
         # self.goal_state.heuristic = 0
-        SearchSolution.frontier.put((self.start_state.eval_func, self.start_state))
+        SearchSolution.frontier.add(self.start_state, self.start_state.eval_func)
         SearchSolution.states_put_in_frontier += 1
         self.current_state = deepcopy(self.start_state)
         while not SearchSolution.frontier.empty():
-            self.current_state = SearchSolution.frontier.get()[1]
+            self.current_state = SearchSolution.frontier.pop()
             SearchSolution.visited.append(self.current_state)
             SearchSolution.states_visited += 1
             if self.check_goal_state():
@@ -89,7 +90,7 @@ class SearchSolution:
             child_state = SearchSolution.produce_state(child, self.current_state)
             SearchSolution.calculate_heuristic(child_state)
             if not SearchSolution.check_in_visited(child_state):
-                SearchSolution.frontier.put((child_state.eval_func, child_state))
+                SearchSolution.frontier.add(child_state, child_state.eval_func)
                 SearchSolution.states_put_in_frontier += 1
 
     @staticmethod
@@ -107,8 +108,8 @@ class SearchSolution:
 
     @staticmethod
     def check_in_visited(state):
-        for item in SearchSolution.frontier.queue:
-            if (item[1].config == state.config).all():
+        for item in SearchSolution.visited:
+            if (item.config == state.config).all():
                 return True
         else:
             return False
