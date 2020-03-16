@@ -56,8 +56,8 @@ class SearchSolution:
             if self.check_goal_state():
                 self.solution_flag = True
                 solution_size = SearchSolution.print_solution(self.current_state, 0)
-                print(f"Solution steps are {solution_size}")
                 break
+
             self.produce_child()
 
     @staticmethod
@@ -123,13 +123,17 @@ class SearchSolution:
     def print_solution(state, size):
         if state is not None:
             size = SearchSolution.print_solution(state.parent_pointer, size)
+            print(f"Step {size}:")
             state.print_state()
-        return size + 1
+            size += 1
+
+        return size
 
     @staticmethod
     def take_config_input(input_state):
         state = State()
         input_dict = {0: False, 1: False, 2: False, 3: False, 4: False, 5: False, 6: False, 7: False, 8: False}
+        print(f"Please enter {input_state} state configurations")
         for i in range(GAME_SIZE - 1, -1, -1):
             for j in range(GAME_SIZE):
                 while True:
@@ -149,7 +153,7 @@ class SearchSolution:
                     except ValueError:
                         print("Given input was not a valid one, try again")
                         continue
-        SearchSolution.states_produced += 1
+        print()
         return state
 
 
