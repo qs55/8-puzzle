@@ -4,11 +4,11 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (8-puzzle)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="PythonCodes" />
-    <orderEntry type="module" module-name="cVision" />
     <orderEntry type="module" module-name="LPTHW" />
     <orderEntry type="module" module-name="cVision" />
+    <orderEntry type="module" module-name="SURF" />
   </component>
 </module>

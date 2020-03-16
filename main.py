@@ -1,5 +1,4 @@
 import numpy as np
-# from queue import PriorityQueue
 from copy import deepcopy
 from priority_queue import PriorityQueue
 
@@ -18,10 +17,13 @@ class State:
         self.blank_coordinates = blank_coordinates
 
     def print_state(self):
+        print("-------------")
         for i in range(GAME_SIZE - 1, -1, -1):
+            print("| ", end="")
             for j in range(GAME_SIZE):
-                print(self.config[i][j], end="  ")
+                print(self.config[i][j], end=" | ")
             print()
+            print("-------------")
         print()
 
     def __lt__(self, other):
@@ -45,10 +47,8 @@ class SearchSolution:
 
     def initialize_game(self):
         SearchSolution.calculate_heuristic(self.start_state)
-        # self.goal_state.heuristic = 0
         SearchSolution.frontier.add(self.start_state, self.start_state.eval_func)
         SearchSolution.states_put_in_frontier += 1
-        # self.current_state = deepcopy(self.start_state)
         while not SearchSolution.frontier.empty():
             self.current_state = SearchSolution.frontier.pop()
             SearchSolution.visited.append(self.current_state)
@@ -155,29 +155,15 @@ class SearchSolution:
 
 def main():
     game = SearchSolution()
-    # # game.current_state.config[0][0] = 9
-    # game.start_state.print_state()
-    # game.goal_state.print_state()
-    # game.current_state.print_state()
-    # print(game.start_state.blank_coordinates)
     game.initialize_game()
-    # print(game.start_state.heuristic)
 
     print("*" * 100)
+    print("Puzzle stats")
     print("*" * 100)
-    print("*" * 100)
-    # while not game.frontier.empty():
-    #     config = game.frontier.get()[1].print_state()
-    if game.solution_flag:
-        print("Solution Found")
-    else:
-        print("Solution not found")
-    print("*" * 100)
-    print("*" * 100)
-    print("*" * 100)
+
     print(f"States produced = {SearchSolution.states_produced}")
     print(f"States visited = {SearchSolution.states_visited}")
-    print(f"States in frontier now = {SearchSolution.frontier.counter}")
+    print(f"States in frontier = {SearchSolution.frontier.counter}")
     print(f"Total states tried to put in frontier = {SearchSolution.states_put_in_frontier}")
     print(f"Total states updated in frontier = {SearchSolution.frontier.removed}")
 

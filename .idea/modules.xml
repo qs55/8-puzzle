@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/8-puzzle.iml" filepath="$PROJECT_DIR$/.idea/8-puzzle.iml" />
       <module fileurl="file://$PROJECT_DIR$/../LPTHW/.idea/LPTHW.iml" filepath="$PROJECT_DIR$/../LPTHW/.idea/LPTHW.iml" />
       <module fileurl="file://$PROJECT_DIR$/../PythonCodes/.idea/PythonCodes.iml" filepath="$PROJECT_DIR$/../PythonCodes/.idea/PythonCodes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../SURF/.idea/SURF.iml" filepath="$PROJECT_DIR$/../SURF/.idea/SURF.iml" />
       <module fileurl="file://$PROJECT_DIR$/../cVision/.idea/cVision.iml" filepath="$PROJECT_DIR$/../cVision/.idea/cVision.iml" />
     </modules>
   </component>

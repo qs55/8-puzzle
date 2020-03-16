@@ -69,10 +69,6 @@ class PriorityQueue(object):
 
         return None
 
-    def __str__(self):
-        temp = [str(e) for e in self.heap if e[-1] is not PriorityQueue._REMOVED]
-        return "[%s]" % ", ".join(temp)
-
     def empty(self):
         if self.counter:
             return False
